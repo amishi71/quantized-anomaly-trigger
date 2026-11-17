@@ -1,0 +1,66 @@
+seed: 42
+
+data:
+  openml_name: hls4ml_lhc_jets_hlf      # verify name / record before relying on it
+  raw_dir: data/raw                      # fallback: drop a csv/parquet/npz here
+  processed_dir: data/processed
+  normal_classes: [g, q]                 # QCD
+  anomaly_classes: [w, z, t]             # evaluation only
+  split: [0.70, 0.15, 0.15]              # applied to QCD only
+  clip_percentiles: [0.1, 99.9]          # fitted on QCD train only
+  log_features: [mass_mmdt, multiplicity]   # inspect histograms, edit as needed
+
+train:
+  batch_size: 1024
+  epochs: 200
+  patience: 10
+  lr: 0.001
+
+archs:
+  - "16-8-4-3-4-8-16"   # 387 params (baseline)
+  - "16-4-4-4-16"       # 188 params
+  - "16-3-16"           # 115 params
+# documented fallback if baseline AUC is poor (run with --archs):
+#   "16-8-4-3-4-8-16", "16-4-4-4-16"
+
+eval:
+  fprs: [0.01, 0.001]
+  baseline_auc_target: 0.80
+
+quant:
+  bits: [8, 6, 4]
+  w_int: 2            # integer bits for weights/biases (range [-2, 2))
+  act_int: 3          # integer bits for quantized_relu
+  latent_int: 2       # integer bits for the signed linear latent
+  input_bits: 8
+  input_int: 4        # inputs are standardised + clipped
+  out_bits: 10
+  out_int: 4
+  finetune_epochs: 20
+  lr: 0.0005
+  patience: 5
+  auc_drop_target: 0.02
+
+prune:                # Phase 4: magnitude (unstructured) pruning
+  sparsities: [0.0, 0.5, 0.75]
+  epochs: 30
+  hold_epochs: 5      # final epochs held at target sparsity
+  lr: 0.0005
+  frequency: 10       # mask update every N steps
+  start: quantized    # quantized = quantize-finetune then prune (sequential); fp32 = joint
+                      # decide with: python -m src.prune --order-check
+
+hls:                  # Phase 5
+  backend: Vitis      # check docs for your installed hls4ml version
+  part: xcvu9p-flgb2104-2-i
+  io_type: io_parallel
+  strategy: Latency
+  reuse_factor: 1
+  n_check: 10000      # QCD jets (and n_check/2 per anomaly class) for agreement check
+  agree_atol_lsb: 1.0 # tolerance in output LSBs
+  agree_frac: 0.99    # fraction of outputs that must be within tolerance
+
+estimate:             # Phase 6
+  pilot_bits: [8, 4]
+  pilot_sparsities: [0.0, 0.75]
+  latency_target_cycles: 100

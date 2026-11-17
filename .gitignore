@@ -1,0 +1,10 @@
+data/*
+!data/.gitkeep
+*.h5
+hls_prj/
+models/
+.venv/
+__pycache__/
+.ipynb_checkpoints/
+*.joblib
+.pytest_cache/

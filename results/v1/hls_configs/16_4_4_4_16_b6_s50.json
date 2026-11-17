@@ -1,0 +1,158 @@
+{
+  "hls_config": {
+    "Model": {
+      "Precision": {
+        "default": "fixed<16,6>"
+      },
+      "ReuseFactor": 1,
+      "Strategy": "Latency",
+      "BramFactor": 1000000000,
+      "TraceOutput": false,
+      "BitExact": null
+    },
+    "LayerName": {
+      "inp": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_input": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<8,5,RND_CONV,SAT,0>"
+        }
+      },
+      "fc1": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<6,2,TRN,WRAP,0>",
+          "bias": "fixed<6,2,TRN,WRAP,0>"
+        }
+      },
+      "fc1_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu1": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<6,3,RND_CONV,SAT,0>"
+        }
+      },
+      "fc2": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<6,2,TRN,WRAP,0>",
+          "bias": "fixed<6,2,TRN,WRAP,0>"
+        }
+      },
+      "fc2_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_latent": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<6,3,RND_CONV,SAT,0>"
+        }
+      },
+      "fc3": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<6,2,TRN,WRAP,0>",
+          "bias": "fixed<6,2,TRN,WRAP,0>"
+        }
+      },
+      "fc3_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu3": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<6,3,RND_CONV,SAT,0>"
+        }
+      },
+      "output": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<6,2,TRN,WRAP,0>",
+          "bias": "fixed<6,2,TRN,WRAP,0>"
+        }
+      },
+      "output_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_output": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<10,5,RND_CONV,SAT,0>"
+        }
+      }
+    }
+  },
+  "precisions": [
+    {
+      "layer": "inp",
+      "class": "VitisInput",
+      "variables.inp": "fixed<16,6,TRN,WRAP,0>"
+    },
+    {
+      "layer": "q_input",
+      "class": "VitisActivation",
+      "variables.q_input": "fixed<8,5,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc1",
+      "class": "VitisDense",
+      "weights.weight": "fixed<6,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<6,2,TRN,WRAP,0>",
+      "variables.fc1": "fixed<19,12,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu1",
+      "class": "VitisActivation",
+      "variables.relu1": "ufixed<6,3,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc2",
+      "class": "VitisDense",
+      "weights.weight": "fixed<6,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<6,2,TRN,WRAP,0>",
+      "variables.fc2": "fixed<15,8,TRN,WRAP,0>"
+    },
+    {
+      "layer": "fc3",
+      "class": "VitisDense",
+      "weights.weight": "fixed<6,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<6,2,TRN,WRAP,0>",
+      "variables.fc3": "fixed<24,13,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu3",
+      "class": "VitisActivation",
+      "variables.relu3": "ufixed<6,3,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "output",
+      "class": "VitisDense",
+      "weights.weight": "fixed<6,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<6,2,TRN,WRAP,0>",
+      "variables.output": "fixed<15,8,TRN,WRAP,0>"
+    }
+  ]
+}

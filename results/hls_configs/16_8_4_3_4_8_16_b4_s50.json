@@ -1,0 +1,238 @@
+{
+  "hls_config": {
+    "Model": {
+      "Precision": {
+        "default": "fixed<16,6>"
+      },
+      "ReuseFactor": 1,
+      "Strategy": "Latency",
+      "BramFactor": 1000000000,
+      "TraceOutput": false,
+      "BitExact": null
+    },
+    "LayerName": {
+      "inp": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_input": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<8,5,RND_CONV,SAT,0>"
+        }
+      },
+      "fc1": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "fc1_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu1": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<8,4,RND_CONV,SAT,0>"
+        }
+      },
+      "fc2": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "fc2_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu2": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<8,4,RND_CONV,SAT,0>"
+        }
+      },
+      "fc3": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<8,4,RND_CONV,SAT,0>",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "fc3_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_latent": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<8,4,RND_CONV,SAT,0>"
+        }
+      },
+      "fc4": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "fc4_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu4": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<8,4,RND_CONV,SAT,0>"
+        }
+      },
+      "fc5": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "fc5_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "relu5": {
+        "Trace": false,
+        "Precision": {
+          "result": "ufixed<8,4,RND_CONV,SAT,0>"
+        }
+      },
+      "output": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<10,5,RND_CONV,SAT,0>",
+          "weight": "fixed<4,2,TRN,WRAP,0>",
+          "bias": "fixed<4,2,TRN,WRAP,0>",
+          "accum": "fixed<32,16>"
+        }
+      },
+      "output_linear": {
+        "Trace": false,
+        "Precision": {
+          "result": "auto"
+        }
+      },
+      "q_output": {
+        "Trace": false,
+        "Precision": {
+          "result": "fixed<10,5,RND_CONV,SAT,0>"
+        }
+      }
+    }
+  },
+  "precisions": [
+    {
+      "layer": "inp",
+      "class": "VitisInput",
+      "variables.inp": "fixed<16,6,TRN,WRAP,0>"
+    },
+    {
+      "layer": "q_input",
+      "class": "VitisActivation",
+      "variables.q_input": "fixed<8,5,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc1",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.fc1": "fixed<17,12,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu1",
+      "class": "VitisActivation",
+      "variables.relu1": "ufixed<8,4,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc2",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.fc2": "fixed<16,10,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu2",
+      "class": "VitisActivation",
+      "variables.relu2": "ufixed<8,4,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc3",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.fc3": "fixed<8,4,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc3_linear",
+      "class": "VitisActivation",
+      "variables.fc3_linear": "fixed<16,6,TRN,WRAP,0>"
+    },
+    {
+      "layer": "fc4",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.fc4": "fixed<23,11,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu4",
+      "class": "VitisActivation",
+      "variables.relu4": "ufixed<8,4,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "fc5",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.fc5": "fixed<15,9,TRN,WRAP,0>"
+    },
+    {
+      "layer": "relu5",
+      "class": "VitisActivation",
+      "variables.relu5": "ufixed<8,4,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "output",
+      "class": "VitisDense",
+      "weights.weight": "fixed<4,2,TRN,WRAP,0>",
+      "weights.bias": "fixed<4,2,TRN,WRAP,0>",
+      "variables.output": "fixed<10,5,RND_CONV,SAT,0>"
+    },
+    {
+      "layer": "output_linear",
+      "class": "VitisActivation",
+      "variables.output_linear": "fixed<16,6,TRN,WRAP,0>"
+    }
+  ]
+}
