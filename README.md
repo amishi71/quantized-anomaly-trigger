@@ -19,7 +19,7 @@ for conversion and C-simulation only, and resource numbers are analytic proxies.
 3. **Compression adds instability.** Quantized models vary much more from seed to seed (std 0.03 to 0.04)
    than FP32 models (0.002 to 0.018), and 75% pruning often degrades or completely collapses the
    reconstruction.
-4. **hls4ml conversion agrees with Keras** after two fixes described below: identical AUCs (within 0.001)
+4. **hls4ml conversion agrees with Keras** after two fixes described below: AUCs that differ by at most 0.0003
    for all 27 configurations, and 20 of 27 within one output LSB for 99% of outputs.
 5. **Not assessed:** latency (needs synthesis), LUT/DSP counts, and anything on real hardware.
 
@@ -113,10 +113,10 @@ aggregation reports (target: at least 3). **Caveats that matter:**
 
 Keras vs hls4ml 1.3.0 (Vitis backend, `io_parallel`, latency strategy), 27 saved *(seed 42)* models,
 10,000 QCD jets plus 5,000 per anomaly class:
-- AUC differences between Keras and hls4ml are at most about 0.001 (at 3-decimal precision) in all 27 configs.
+- AUC differences between Keras and hls4ml are at most 0.0003 in all 27 configs.
 - 20 of 27 configs have at least 99% of outputs within one output LSB (1/32). The 7 that fall just short
-  (98.4% to 99.0%) are 6 unpruned models and one 50%-pruned model; max differences are at most 0.5 and the 99th
-  percentile at most 0.0625. The cause was not isolated (rounding-tie differences are the likely one).
+  (98.5% to 99.0%) are 6 unpruned models and one 50%-pruned model; for these the max difference is at most 0.28 and the
+  99th percentile is 0.0625. The cause was not isolated (rounding-tie differences are the likely one).
 - Two fixes were needed (`src/convert.py`): (1) hls4ml's default accumulator `ap_fixed<16,6>` wraps around at
   ±32, which gave differences of up to 8.6 and AUC mismatches of up to 0.14; the accumulators are now
   `fixed<32,16>`. (2) hls4ml drops the linear quantizer layers (`q_latent`, `q_output`), so their saturation
@@ -151,9 +151,7 @@ untested and its API call is unverified).
 - **Unexplained AUC loss.** The unpruned `16-8-4-3-4-8-16` quantized at 8, 6 or 4 bits lost 0.04 to 0.07
   pooled AUC in earlier single-config runs, with large seed-to-seed spread (per-seed drops from 0.01 to
   0.17 at 8 bits). Wider weight range, longer fine-tuning and an extra-training control did not explain it.
-- **Reconstruction quality and detection are decoupled.** Some of the best AUCs come from models with lower r²
-  (for example a 4-bit 50%-pruned model at AUC 0.78 with r² 0.75 in a single seed, which did not hold up over
-  5 seeds). Whether reconstruction error is the right score for compressed models was not tested.
+- **Reconstruction quality and detection are only moderately related.** Across the 22 non-collapsed configs the correlation between mean r² and mean pooled AUC is about 0.5 (computed from the aggregate table; 0.28 including collapsed configs), and configs with r² of at least 0.8 still span pooled AUC 0.63 to 0.69. In single-seed runs some of the highest AUCs came from models with lower r² (one 4-bit 50%-pruned model scored 0.78 at r² 0.75), which did not hold up over 5 seeds. Whether reconstruction error is the right score for compressed models was not tested.
 - **75% sparsity** frequently collapses or degrades the model; uniform per-layer sparsity on very small networks
   is probably too aggressive, not tested.
 - **Selection effects** (section 2) and fixed data split (section 1).
