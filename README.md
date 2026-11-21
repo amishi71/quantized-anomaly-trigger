@@ -191,8 +191,18 @@ python -m src.estimate_resources --mode C --grid
 python -m src.latency_report             # reports that latency was not assessed in mode C
 python -m src.sweep --seeds 5            # about 30 minutes; resumable
 python -m src.aggregate                  # results/compression_table.csv, results/pareto.png
-jupyter lab results.ipynb
+# then open results.ipynb (see the Notebook section below)
 pytest
+```
+
+**Notebook.** `results.ipynb` only reads the CSVs and plots, so it does not need TensorFlow. The pinned TensorFlow 2.13
+stack forces `typing_extensions<4.6`, which stops the Jupyter kernel from starting in the same environment
+(`ImportError: cannot import name 'TypeAliasType'`). Use a separate small environment:
+
+```bash
+python3.11 -m venv ~/qat-notebook-env
+~/qat-notebook-env/bin/pip install -r requirements-notebook.txt
+# VS Code: Select Kernel > Python Environments > Enter interpreter path > ~/qat-notebook-env/bin/python
 ```
 
 Other tools: `src/seed_check.py` (seed spread and a no-quantization control), `src/range_check.py`
